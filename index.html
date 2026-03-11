@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your weight loss progress, calculate your BMR, and get personalized suggestions with the Weight Loss Tracker.">
+    <title>Fitness Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Bootstrap Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#dashboard">
+                <i class="fas fa-weight me-2"></i>FitTrack
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#bmr"><i class="fas fa-calculator me-1"></i> BMR Calculator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#progress"><i class="fas fa-chart-line me-1"></i> Progress Chart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#checklist"><i class="fas fa-tasks me-1"></i> Daily Checklist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#suggestion"><i class="fas fa-robot me-1"></i> Health Assistant</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact"><i class="fas fa-envelope me-1"></i> Contact Us</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button id="loginBtn" class="btn btn-outline-light me-2"><i class="fas fa-sign-in-alt me-1"></i> Login</button>
+                    <button id="signupBtn" class="btn btn-light"><i class="fas fa-user-plus me-1"></i> Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-user-plus me-2"></i>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName"><i class="fas fa-user"></i> Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword"><i class="fas fa-lock"></i> Password</label>
+                    <div class="password-container">
+                        <input type="password" id="signupPassword" placeholder="Create a password" required>
+                        <button type="button" onclick="togglePasswordVisibility('signupPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus me-1"></i> Sign Up
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-sign-in-alt me-2"></i>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Dashboard -->
+    <section id="dashboard" class="active">
+        <div class="container">
+            <h2><i class="fas fa-tachometer-alt me-2"></i>My Dashboard</h2>
+            <div class="calorie-tracker">
+                <div class="progress-visual">
+                    <div class="human-figure">
+                        <div class="fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+                <div class="calorie-info">
+                    <div class="info-card">
+                        <i class="fas fa-bullseye"></i>
+                        <div>
+                            <h3>Calorie Budget</h3>
+                            <p id="calorieBudgetDisplay">0 kcal</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-utensils"></i>
+                        <div>
+                            <h3>Consumed</h3>
+                            <p id="consumedCalories">0 kcal</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-fire"></i>
+                        <div>
+                            <h3>Calories Left</h3>
+                            <p id="caloriesLeft">0 kcal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="addFoodBtn" class="btn-primary">
+                        <i class="fas fa-plus-circle me-1"></i> Add Food
+                    </button>
+                    <button id="startNewCountBtn" class="btn-secondary">
+                        <i class="fas fa-sync-alt me-1"></i> Reset
+                    </button>
+                </div>
+            </div>
+            <div id="foodList" class="food-list"></div>
+        </div>
+    </section>
+
+    <!-- BMR Calculator -->
+    <section id="bmr">
+        <div class="container">
+            <h2><i class="fas fa-calculator me-2"></i>BMR Calculator</h2>
+            <div class="bmr-container">
+                <form id="bmrForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age"><i class="fas fa-birthday-cake"></i> Age</label>
+                            <input type="number" id="age" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                            <select id="gender" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weight"><i class="fas fa-weight"></i> Weight (kg)</label>
+                            <input type="number" id="weight" min="1" max="500" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="height"><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+                            <input type="number" id="height" min="1" max="300" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="activity"><i class="fas fa-running"></i> Activity Level</label>
+                        <select id="activity" required>
+                            <option value="1.2">Sedentary (little or no exercise)</option>
+                            <option value="1.375">Lightly Active (light exercise 1-3 days/week)</option>
+                            <option value="1.55">Moderately Active (moderate exercise 3-5 days/week)</option>
+                            <option value="1.725">Very Active (hard exercise 6-7 days/week)</option>
+                            <option value="1.9">Extra Active (very hard exercise & physical job)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-calculator me-1"></i> Calculate BMR
+                    </button>
+                </form>
+                <div id="bmrResult" class="result-box"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Chart -->
+    <section id="progress">
+        <div class="container">
+            <h2><i class="fas fa-chart-line me-2"></i>Progress Chart</h2>
+            <div class="chart-container">
+                <form id="weightForm">
+                    <div class="form-group">
+                        <label for="weightInput"><i class="fas fa-weight-hanging"></i> Log Weight (kg)</label>
+                        <input type="number" id="weightInput" min="1" max="500" step="0.1" required>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save me-1"></i> Log Weight
+                    </button>
+                </form>
+                <div class="chart-wrapper">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>Starting Weight</h3>
+                        <p id="startingWeight">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Weight</h3>
+                        <p id="currentWeight">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Weight Change</h3>
+                        <p id="weightChange">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Checklist -->
+    <section id="checklist">
+        <div class="container">
+            <h2><i class="fas fa-tasks me-2"></i>Daily Checklist</h2>
+            <div class="checklist-container">
+                <div class="checklist-items">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="water">
+                        <label for="water">
+                            <i class="fas fa-tint"></i>
+                            <span>8 Glasses of Water</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="exercise">
+                        <label for="exercise">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Exercise/Workout</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="sleep">
+                        <label for="sleep">
+                            <i class="fas fa-bed"></i>
+                            <span>7-8 Hours of Sleep</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="stress">
+                        <label for="stress">
+                            <i class="fas fa-brain"></i>
+                            <span>Manage Stress</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="nutrition">
+                        <label for="nutrition">
+                            <i class="fas fa-apple-alt"></i>
+                            <span>Healthy Nutrition</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="steps">
+                        <label for="steps">
+                            <i class="fas fa-walking"></i>
+                            <span>10,000 Steps</span>
+                            <div class="checkmark"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="checklist-progress">
+                    <div class="progress-circle">
+                        <svg>
+                            <circle class="progress-bg" cx="50%" cy="50%" r="45%"></circle>
+                            <circle class="progress-bar" cx="50%" cy="50%" r="45%"></circle>
+                        </svg>
+                        <div class="progress-text" id="checklistProgress">0%</div>
+                    </div>
+                    <h3>Daily Completion</h3>
+                    <button id="resetChecklist" class="btn-secondary">
+                        <i class="fas fa-sync-alt me-1"></i> Reset Checklist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personalized Suggestion -->
+    <section id="suggestion">
+        <div class="container">
+            <h2><i class="fas fa-robot me-2"></i>Health Assistant</h2>
+            <div class="chatbot-container">
+                <div class="chatbot">
+                    <div id="chatbox"></div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask me anything about health or weight loss...">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <div class="chatbot-tips">
+                    <h3><i class="fas fa-lightbulb"></i> Quick Tips</h3>
+                    <ul>
+                        <li onclick="quickQuestion('How can I lose weight faster?')">How can I lose weight faster?</li>
+                        <li onclick="quickQuestion('What foods should I avoid?')">What foods should I avoid?</li>
+                        <li onclick="quickQuestion('Best exercises for weight loss?')">Best exercises for weight loss?</li>
+                        <li onclick="quickQuestion('How much water should I drink?')">How much water should I drink?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us -->
+    <section id="contact">
+        <div class="container">
+            <h2><i class="fas fa-envelope me-2"></i>Contact Us</h2>
+            <div class="contact-container">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="contactName"><i class="fas fa-user"></i> Name</label>
+                        <input type="text" id="contactName" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="contactEmail" placeholder="Your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMessage"><i class="fas fa-comment"></i> Message</label>
+                        <textarea id="contactMessage" placeholder="Your message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane me-1"></i> Send Message
+                    </button>
+                </form>
+                <div class="contact-info">
+                    <h3><i class="fas fa-info-circle"></i> Information</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Health St, Wellness City</p>
+                    <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+                    <p><i class="fas fa-envelope"></i> support@weightlosstracker.com</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-weight"></i>
+                    <span>Weight Loss Tracker</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#dashboard">Dashboard</a>
+                    <a href="#bmr">BMR Calculator</a>
+                    <a href="#progress">Progress</a>
+                    <a href="#checklist">Checklist</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-subscribe">
+                    <h3>Subscribe to our newsletter</h3>
+                    <form id="newsletterForm">
+                        <input type="email" placeholder="Your email" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Weight Loss Tracker. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+<!-- Firebase SDK -->
+<script type="module">
+  // Import Firebase core + needed services
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+  // Your Firebase config (from console)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAcszNexVFikyBKdNmeyYfFsgD8so3loBg",
+  authDomain: "fittrack-94663.firebaseapp.com",
+  databaseURL: "https://fittrack-94663-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "fittrack-94663",
+  storageBucket: "fittrack-94663.firebasestorage.app",
+  messagingSenderId: "919208730182",
+  appId: "1:919208730182:web:cf72b632bbcf0b7d823447",
+  measurementId: "G-QQT42E2KZB"
+};
+ 
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // Make available to other scripts
+  window.auth = auth;
+  window.db = db;
+  window.firebaseAuth = auth;
+</script>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="script1.js"></script>
+    
+
+</body>
+</html>
